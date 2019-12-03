@@ -7,10 +7,10 @@ Package godsp is a Go package developed to support some basic signal processing 
 * **go-dsp/dbscan**: Implementation of DBSCAN (https://en.wikipedia.org/wiki/DBSCAN) to cluster histogram bins.  
 * **go-dsp/dwt**: Lifting implementation of the discrete wavelet transform using the Daubechies 4 wavelet. See:
 
-    Ripples in Mathematics. The Discrete Wavelet Transform.
-    A. Jensen and A. la Cour-Harbo
-    Springer 2001
-    Section 3.4
+    Ripples in Mathematics. The Discrete Wavelet Transform.   
+    A. Jensen and A. la Cour-Harbo   
+    Springer 2001   
+    Section 3.4   
 
 * **go-dsp/ioutil**: Utility functions for reading/writing files.
 
