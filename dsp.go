@@ -69,18 +69,14 @@ func Average(x []float64) float64 {
 }
 
 /*
-Xcorr returns the cross correlation of x with y for maxDelay.
+DivS returns x/s where x is a vector and s a scalar.
 */
-func Xcorr(x, y []float64, maxDelay int) (corr []float64) {
-	N := len(x)
-	corr = make([]float64, maxDelay)
-	for k := 0; k < maxDelay; k++ {
-		for n := 0; n < N-k; n++ {
-			corr[k] += x[n] * y[n+k]
-		}
-		corr[k] /= float64(N)
+func DivS(x []float64, s float64) []float64 {
+	y := make([]float64, len(x))
+	for i := range x {
+		y[i] = x[i] / s
 	}
-	return
+	return y
 }
 
 /*
@@ -121,6 +117,17 @@ func DownSample(x []float64, n int) []float64 {
 
 // FindMax returns the value and index of the first element of x equal to the maximum value in x.
 func FindMax(x []float64) (value float64, index int) {
+	value, index = x[0], 0
+	for i := 1; i < len(x)-1; i++ {
+		if x[i] > value {
+			value, index = x[i], i
+		}
+	}
+	return
+}
+
+// FindMax* returns the value and index of the first element of x equal to the maximum value in x.
+func FindMaxI(x []int) (value int, index int) {
 	value, index = x[0], 0
 	for i := 1; i < len(x)-1; i++ {
 		if x[i] > value {
@@ -227,6 +234,17 @@ func MaxInt(x []int) int {
 }
 
 /*
+MovAvg returns the moving average for each x[i], given by sum(x[i-w:i+w])/(2w)
+*/
+func MovAvg(x []float64, w int) []float64 {
+	y := make([]float64, len(x))
+	for i := w; i < len(x)-w; i++ {
+		y[i] = Sum(x[i-w:i+w]) / float64(2*w)
+	}
+	return y
+}
+
+/*
 Multiplex returns on vector with the element of vs interleaved
 */
 func Multiplex(channels [][]float64) []float64 {
@@ -311,11 +329,25 @@ func RemoveAvg(x []float64) []float64 {
 // Smooth smoothts x: x[i] = sum(x[i-wdw:i+wdw])/(2*wdw)
 func Smooth(x []float64, wdw int) {
 	for i := 0; i < wdw; i++ {
-		x[i] = Sum(x[:i+wdw]) / float64(i+wdw)
+		x[i] = 0
 	}
 	for i := wdw; i < len(x)-wdw; i++ {
 		x[i] = Sum(x[i-wdw:i+wdw]) / float64((2 * wdw))
 	}
+}
+
+/*
+Sub returns x - y. The function panics if len(x) != len(y).
+*/
+func Sub(x, y []float64) []float64 {
+	if len(x) != len(y) {
+		panic("len(x) != len(y)")
+	}
+	x1 := make([]float64, len(x))
+	for i := range x {
+		x1[i] = x[i] - y[i]
+	}
+	return x1
 }
 
 // Sum returns the sum of the elements of the vector x
@@ -436,4 +468,19 @@ func WriteIntDataFile(x []int, fname string) {
 	if err := myioutil.WriteFile(fname+".txt", buf.Bytes()); err != nil {
 		panic(err)
 	}
+}
+
+/*
+Xcorr returns the cross correlation of x with y for maxDelay.
+*/
+func Xcorr(x, y []float64, maxDelay int) (corr []float64) {
+	N := len(x)
+	corr = make([]float64, maxDelay)
+	for k := 0; k < maxDelay; k++ {
+		for n := 0; n < N-k; n++ {
+			corr[k] += x[n] * y[n+k]
+		}
+		corr[k] /= float64(N)
+	}
+	return
 }

@@ -34,7 +34,8 @@ func Daubechies4(s []float64, level int) *Transform {
 		st:    make([]float64, GetFrameSize(s)),
 		level: level,
 	}
-	copy(t.st, s)
+	diff := len(t.st) - len(s)
+	copy(t.st[diff:], s)
 	max := len(s)
 	for l := level; l > 0; l-- {
 		split(t.st[:max])
