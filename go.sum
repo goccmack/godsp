@@ -1,2 +1,8 @@
+github.com/go-audio/audio v1.0.0 h1:zS9vebldgbQqktK4H0lUqWrG8P0NxCJVqcj7ZpNnwd4=
+github.com/go-audio/audio v1.0.0/go.mod h1:6uAu0+H2lHkwdGsAY+j2wHPNPpPoeg5AaEFh9FlA+Zs=
 github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12 h1:dd7vnTDfjtwCETZDrRe+GPYNLA1jBtbZeyfyE8eZCyk=
 github.com/mjibson/go-dsp v0.0.0-20180508042940-11479a337f12/go.mod h1:i/KKcxEWEO8Yyl11DYafRPKOPVYTrhxiTRigjtEEXZU=
+github.com/youpy/go-riff v0.0.0-20131220112943-557d78c11efb h1:RDh7U5Di6o7fblIBe7rVi9KnrcOXUbLwvvLLdP2InSI=
+github.com/youpy/go-riff v0.0.0-20131220112943-557d78c11efb/go.mod h1:83nxdDV4Z9RzrTut9losK7ve4hUnxUR8ASSz4BsKXwQ=
+github.com/youpy/go-wav v0.0.0-20160223082350-b63a9887d320 h1:YuM+QcBOD3fVTF1p5upTKvfAn+CaI1Tsh2s0dxdEzhI=
+github.com/youpy/go-wav v0.0.0-20160223082350-b63a9887d320/go.mod h1:Zf+Ju+8Ofy5zx/YWWArfcGnl5FAsWumLq/uHeRGgL60=

@@ -24,7 +24,7 @@ import (
 /*
 ReadWavFile returns the demultiplexed channels of a wav file, and the sample rate in Hz.
 */
-func ReadWavFile(wavName string) (channels [][]float64, sampleRate int) {
+func ReadWavFile(wavName string) (channels [][]float64, sampleRate, bitsPerSample int) {
 	buf, err := ioutil.ReadFile(wavName)
 	if err != nil {
 		panic(err)
@@ -35,6 +35,7 @@ func ReadWavFile(wavName string) (channels [][]float64, sampleRate int) {
 	}
 	numSamples, numChannels := rdr.Samples, int(rdr.NumChannels)
 	sampleRate = int(rdr.SampleRate)
+	bitsPerSample = int(rdr.Header.BitsPerSample)
 	channels = make([][]float64, numChannels)
 	chanLen := numSamples / numChannels
 	for i := range channels {

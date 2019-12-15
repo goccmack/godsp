@@ -1,16 +1,17 @@
-//  Copyright 2019 Marius Ackerman
-//
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-//  Unless required by applicable law or agreed to in writing, software
-//  distributed under the License is distributed on an "AS IS" BASIS,
-//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  See the License for the specific language governing permissions and
-//  limitations under the License.
+/*
+Copyright 2019 Marius Ackerman
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
 /*
 Package dsp has a set of digital signal processing functions that are primarily
@@ -379,11 +380,32 @@ func SumVectors(X [][]float64) []float64 {
 
 func ToFloat(x []int) []float64 {
 	y := make([]float64, len(x))
-	max := float64(MaxInt(AbsInt(x)))
 	for i, e := range x {
-		y[i] = float64(e) / max
+		y[i] = float64(e) / float64(math.MaxInt64)
 	}
 	return y
+}
+
+/*
+ToInt returns y * math.MaxInt64.
+The range of x is [-1.0,1.0].
+The function panics if bitsPerSample is not one of 8,16,32.
+*/
+func ToInt(x []float64, bitsPerSample int) []int {
+	y := make([]int, len(x))
+	if bitsPerSample != 8 && bitsPerSample != 16 && bitsPerSample != 32 {
+		panic(fmt.Sprintf("Invalid bitsPerSample %d", bitsPerSample))
+	}
+	max := float64(int(1)<<bitsPerSample - 1)
+	for i, f := range x {
+		y[i] = int(f * max)
+	}
+	return y
+}
+
+func ToIntS(x float64, bitsPerSample int) int {
+	max := float64(int(1)<<bitsPerSample - 1)
+	return int(x * max)
 }
 
 func findLocalMax(x []float64, from, wdw, step int) (maxI, slopeEnd int) {
