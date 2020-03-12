@@ -100,14 +100,11 @@ func DownSampleAll(xs [][]float64) [][]float64 {
 
 /*
 DownSample returns x downsampled by n
-Function panics if n or len(x) is not a power of 2.
+Function panics if len(x) is not an integer multiple of n.
 */
 func DownSample(x []float64, n int) []float64 {
-	if !IsPowerOf2(n) {
-		panic(fmt.Sprintf("n (%d) is not a power of 2", n))
-	}
-	if !IsPowerOf2(len(x)) {
-		panic(fmt.Sprintf("len(x) (%d) is not a power of 2", len(x)))
+	if len(x)%n != 0 {
+		panic(fmt.Sprintf("len(x) (%d) is not an integer multiple of n (%d)", len(x), n))
 	}
 
 	x1 := make([]float64, len(x)/n)
@@ -185,7 +182,8 @@ func LoadFloats(fname string) []float64 {
 	return x
 }
 
-// Log2 returns the integer log base 2 of n
+// Log2 returns the integer log base 2 of n.
+// E.g.: log2(12) ~ 3.6. Log2 returns 3
 func Log2(n int) int {
 	return int(math.Log2(float64(n)))
 }

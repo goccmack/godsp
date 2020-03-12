@@ -18,43 +18,71 @@ Package DWT has functions supporting the Discrete Wavelet Transform.
 package dwt
 
 import (
-	"github.com/goccmack/godsp"
+	"fmt"
 	"math"
+
+	"github.com/goccmack/godsp"
 )
 
 type Transform struct {
-	st      []float64
-	level   int
-	padding int
+	st       []float64
+	level    int
+	sections []*transformSection
+}
+
+type transformSection struct {
+	start int
+	size  int
 }
 
 // Daubechies4 returns the DWT with Daubechies 4 coeficients to level.
 func Daubechies4(s []float64, level int) *Transform {
 	t := &Transform{
-		st:    make([]float64, GetFrameSize(s)),
-		level: level,
+		st:       make([]float64, len(s)),
+		level:    level,
+		sections: getTransformSections(len(s), level),
 	}
-	diff := len(t.st) - len(s)
-	copy(t.st[diff:], s)
-	max := len(s)
-	for l := level; l > 0; l-- {
-		split(t.st[:max])
-		daubechies4(t.st[:max])
-		max /= 2
+	copy(t.st, s)
+	for _, section := range t.sections {
+		scaleSize := section.size
+		for l := level; l > 0; l-- {
+			max := section.start + scaleSize
+			split(t.st[section.start:max])
+			daubechies4(t.st[section.start:max])
+			scaleSize /= 2
+		}
 	}
 
 	return t
 }
 
 /*
-GetFrameSize returns the size of DWT frame required for
+Return the series of length 2^k stages of the DWT
 */
-func GetFrameSize(s []float64) int {
-	logLen := math.Log2(float64(len(s)))
-	logLenInt := int(math.Ceil(logLen))
-
-	return godsp.Pow2(logLenInt)
+func getTransformSections(N, level int) (sections []*transformSection) {
+	for start := 0; N-start >= 64*godsp.Pow2(level); {
+		size := int(godsp.Pow2(godsp.Log2(N - start)))
+		section := &transformSection{
+			start: start,
+			size:  size,
+		}
+		sections = append(sections, section)
+		start += size
+		fmt.Printf("start=%d, size=%d, rem=%d\n",
+			section.start, section.size, N-start)
+	}
+	return
 }
+
+/*
+GetFrameSize returns the size of DWT frame required for the transform
+*/
+// func GetFrameSize(s []float64) int {
+// 	logLen := math.Log2(float64(len(s)))
+// 	logLenInt := int(math.Ceil(logLen))
+
+// 	return godsp.Pow2(logLenInt)
+// }
 
 /*
 Split s into even and odd elements,
@@ -77,7 +105,7 @@ func split(s []float64) {
 }
 
 /*
-After: Riples section 3.4
+After: Ripples section 3.4
 */
 func daubechies4(s []float64) {
 	half := len(s) / 2
@@ -113,10 +141,11 @@ func daubechies4(s []float64) {
 // GetCoefficients returns the coefficients of all transform levels
 func (t *Transform) GetCoefficients() [][]float64 {
 	cfs := make([][]float64, t.level)
-	half := len(t.st) / 2
-	for l := 1; l <= t.level; l++ {
-		cfs[l-1] = t.st[half : 2*half]
-		half /= 2
+	for _, s := range t.sections {
+		scfs := t.getSectionCoefficients(s)
+		for i, c := range scfs {
+			cfs[i] = append(cfs[i], c...)
+		}
 	}
 	return cfs
 }
@@ -124,20 +153,33 @@ func (t *Transform) GetCoefficients() [][]float64 {
 // GetDownSampledCoefficients returns the coefficients of all the levels downsampled to
 // the length of the deepest level of the transform.
 func (t *Transform) GetDownSampledCoefficients() [][]float64 {
-	cfs := t.GetCoefficients()
-	minN := len(cfs[len(cfs)-1])
-	for i, cf := range cfs {
-		if i != len(cfs)-1 {
-			ds := len(cf) / minN
-			cfs[i] = godsp.DownSample(cf, ds)
+	dscfs := make([][]float64, t.level)
+	for _, s := range t.sections {
+		cfs := t.getSectionCoefficients(s)
+		for i, cf := range cfs {
+			if i < t.level-1 {
+				dscfs[i] = append(dscfs[i],
+					godsp.DownSample(cf, godsp.Pow2(t.level-(i+1)))...)
+			}
 		}
 	}
-	return cfs
+	return dscfs
 }
 
 /*
 GetDecomposition returns the vector containing the DWT decomposion
 */
-func (t *Transform) GetDecomposion() []float64 {
+func (t *Transform) GetDecomposition() []float64 {
 	return t.st
+}
+
+// GetCoefficients returns the coefficients of all transform levels
+func (t *Transform) getSectionCoefficients(s *transformSection) [][]float64 {
+	cfs := make([][]float64, t.level)
+	half := s.size / 2
+	for l := 1; l <= t.level; l++ {
+		cfs[l-1] = t.st[s.start+half : s.start+2*half]
+		half /= 2
+	}
+	return cfs
 }
