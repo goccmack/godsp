@@ -24,11 +24,12 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	myioutil "github.com/goccmack/godsp/ioutil"
 	"io/ioutil"
 	"math"
 	"strconv"
 	"strings"
+
+	myioutil "github.com/goccmack/goutil/ioutil"
 )
 
 // Abs returns |x|

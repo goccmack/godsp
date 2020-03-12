@@ -21,8 +21,9 @@ package dbscan
 import (
 	"bytes"
 	"fmt"
-	"github.com/goccmack/godsp/ioutil"
 	"sort"
+
+	"github.com/goccmack/goutil/ioutil"
 )
 
 const (
