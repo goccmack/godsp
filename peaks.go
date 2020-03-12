@@ -136,6 +136,21 @@ func (pks *Peaks) GetIndices(fracOfMaxPersistence float64) []int {
 }
 
 /*
+Max returns the index in the original time series `seq` of the peak with the
+highest y-value. See GetIndices for fracOfMaxPersistence.
+*/
+func (pks *Peaks) Max(fracOfMaxPersistence float64) int {
+	idxs := pks.GetIndices(fracOfMaxPersistence)
+	biggest, val := -1, math.Inf(-1)
+	for _, pk := range idxs {
+		if pks.seq[pk] > val {
+			biggest, val = pk, pks.seq[pk]
+		}
+	}
+	return biggest
+}
+
+/*
 MinMaxPersistence returns the minimum and maximum persistence of the peaks in `seq`.
 */
 func (pks *Peaks) MinMaxPersistence() (min, max float64) {
