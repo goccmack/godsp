@@ -18,7 +18,6 @@ Package DWT has functions supporting the Discrete Wavelet Transform.
 package dwt
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/goccmack/godsp"
@@ -68,8 +67,6 @@ func getTransformSections(N, level int) (sections []*transformSection) {
 		}
 		sections = append(sections, section)
 		start += size
-		fmt.Printf("start=%d, size=%d, rem=%d\n",
-			section.start, section.size, N-start)
 	}
 	return
 }
