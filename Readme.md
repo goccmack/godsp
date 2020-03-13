@@ -15,4 +15,4 @@ Package godsp is a Go package developed to support some basic signal processing 
 
 ## Installation
 
-    $ go get github.com/mjibson/go-dsp/fft
+    $ go get github.com/goccmack/godsp
