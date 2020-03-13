@@ -12,11 +12,17 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-package godsp
+/*
+Package ppeaks detects the peaks in a time series by means of persistent homology:
+https://www.sthu.org/blog/13-perstopology-peakdetection/index.html.
+*/
+package ppeaks
 
 import (
 	"math"
-	"sort"
+    "sort"
+    
+    "github.com/goccmack/godsp"
 )
 
 const none = -1
@@ -46,15 +52,18 @@ func (p *Peak) getPersistence(seq []float64) float64 {
 	return seq[p.born] - seq[p.died]
 }
 
+/*
+GetPeaksInt finds the peaks in an integer time series.
+Peaks are returnend in increasing order of their indices.
+*/
 func GetPeaksInt(seq []int) *Peaks {
-	seq1 := ToFloat(seq)
+	seq1 := godsp.ToFloat(seq)
 	return GetPeaks(seq1)
 }
 
 /*
-GetPeaks detects the peaks in a time series `seq` by means of persistent homology:
-https://www.sthu.org/blog/13-perstopology-peakdetection/index.html.
-The returned peaks are in increasing order of their indices in `seq`.
+GetPeaks returns the peaks in a floating point time series. 
+Peaks are returnend in increasing order of their indices.
 */
 func GetPeaks(seq []float64) *Peaks {
 	peaks := make([]*Peak, 0, 1024)
@@ -64,7 +73,7 @@ func GetPeaks(seq []float64) *Peaks {
 		idxtopeak[i] = none
 	}
 	// Sequence indices sorted by values
-	indices := Range(len(seq))
+	indices := godsp.Range(len(seq))
 	sort.SliceStable(indices, func(i, j int) bool { return seq[indices[i]] > seq[indices[j]] })
 	// Process each sample in descending order
 	for _, idx := range indices {
