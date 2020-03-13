@@ -492,6 +492,25 @@ func WriteIntDataFile(x []int, fname string) {
 }
 
 /*
+WriteIntMatrixDataFile writes an integer matrix to a text file `fname.csv`
+*/
+func WriteIntMatrixDataFile(x [][]int, fname string) {
+	buf := new(bytes.Buffer)
+	for _, row := range x {
+		for i, col := range row {
+			if i > 0 {
+				fmt.Fprint(buf, ",")
+			}
+			fmt.Fprintf(buf, "%d", col)
+		}
+		fmt.Fprintln(buf)
+	}
+	if err := myioutil.WriteFile(fname+".csv", buf.Bytes()); err != nil {
+		panic(err)
+	}
+}
+
+/*
 Xcorr returns the cross correlation of x with y for maxDelay.
 */
 func Xcorr(x, y []float64, maxDelay int) (corr []float64) {
