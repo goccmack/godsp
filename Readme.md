@@ -6,7 +6,7 @@ Package godsp is a Go package developed to support some basic signal processing 
 
 - **godsp**: General functions on vectors or sets of vectors.
 - **godsp/dbscan**: Implementation of DBSCAN (https://en.wikipedia.org/wiki/DBSCAN) to cluster histogram bins.
-- **godsp/peaks**: Peak detection for time series
+- **godsp/peaks**: Efficient peak detection for time series
 - **godsp/ppeaks**: Peak detection on the basis of persistent homology:
 [https://www.sthu.org/blog/13-perstopology-peakdetection/index.html](https://www.sthu.org/blog/13-perstopology-peakdetection/index.html).
 - **godsp/dwt**: Lifting implementation of the discrete wavelet transform using the Daubechies 4 wavelet. See:
